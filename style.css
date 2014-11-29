@@ -1,0 +1,15 @@
+html, body {
+    margin: 0;
+    height: 100%;
+}
+
+body{
+	width:100%;
+	display:flex;
+}
+
+#timer{
+	margin:auto;
+	font-family:monospace;
+	font-size:8em;
+}

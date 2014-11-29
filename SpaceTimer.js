@@ -20,13 +20,18 @@ var Keys = (function(keys){ // Store the keys I use
 	})
 	return myKeys;
 })([ // List of Keys
-	' '
+	' ',
+	'R'
 ]);
 
 window.addEventListener('keyup',function(evt){
 	if(evt.keyCode === Keys[' ']){
 		finalTime = Date.now() - startTime;
 		running = false;
+	} else if (evt.keyCode === Keys.R){
+		if(!running){
+			finalTime = 0;
+		}
 	}
 });
 
