@@ -8,8 +8,11 @@ body{
 	display:flex;
 }
 
-#timer{
+#timers{
 	margin:auto;
+}
+
+.timer{
 	font-family:monospace;
 	font-size:8em;
 }

@@ -1,7 +1,9 @@
-var running = false;
-var finalTime = 0;
-var startTime;
+var running = [];
+var finalTime = [];
+var startTime = [];
+var timerKeys = [' ', 'Z', 'X']; // Add keys here for more timers
 function timeToString(time){
+	time = time || 0;
 	var mSecs = time % 1000;
 	time = Math.floor(time / 1000);
 	var secs = time % 60;
@@ -19,38 +21,55 @@ var Keys = (function(keys){ // Store the keys I use
 		myKeys[item] = keyCode(item);
 	})
 	return myKeys;
-})([ // List of Keys
-	' ',
-	'R'
-]);
+})(['R'].concat(timerKeys));
 
 window.addEventListener('keyup',function(evt){
-	if(evt.keyCode === Keys[' ']){
-		finalTime = Date.now() - startTime;
-		running = false;
-	} else if (evt.keyCode === Keys.R){
-		if(!running){
-			finalTime = 0;
+	for(var i = 0; i < timerKeys.length; i++){
+		if(evt.keyCode === Keys[[timerKeys[i]]]){
+			finalTime[timerKeys[i]] = Date.now() - startTime[timerKeys[i]];
+			running[timerKeys[i]] = false;
+		}
+	}
+
+	if (evt.keyCode === Keys.R){
+		for(var i = 0; i < timerKeys.length; i++){
+			finalTime[timerKeys[i]] = 0;
 		}
 	}
 });
 
 window.addEventListener('keydown',function(evt){
-	if(evt.keyCode === Keys[' ']){
-		if(running){
-			return;
+	for(var i = 0; i < timerKeys.length; i++){
+		if(evt.keyCode === Keys[timerKeys[i]]){
+			if(running[timerKeys[i]]){
+				return;
+			}
+			running[timerKeys[i]] = true;
+			startTime[timerKeys[i]] = Date.now();
 		}
-		running = true;
-		startTime = Date.now();
 	}
 });
 
+function elementName(key){
+	return (key===' '?'space':key)+'timer';
+}
+
 window.onload = function(){
+	for(var i = 0; i < timerKeys.length; i++){
+		var newTimer = $('<p>',{
+			'id': elementName(timerKeys[i]),
+			'class': 'timer'
+		});
+		newTimer.text(timeToString());
+		$('#timers').append(newTimer);
+	}
 	function run(){
-		if(running){
-			$("#timer").text(timeToString(Date.now() - startTime));
-		}else{
-			$("#timer").text(timeToString(finalTime));
+		for(var i = 0; i < timerKeys.length; i++){
+			if(running[timerKeys[i]]){
+				$("#"+elementName(timerKeys[i])).text(timeToString(Date.now() - startTime[timerKeys[i]]));
+			}else{
+				$("#"+elementName(timerKeys[i])).text(timeToString(finalTime[timerKeys[i]]));
+			}
 		}
 		window.requestAnimationFrame(run);
 	}
